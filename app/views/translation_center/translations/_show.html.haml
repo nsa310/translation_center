@@ -11,10 +11,6 @@
     %small.pull-right
       %em
         = t('.by')
-        - if translation.translator == current_user
-          = t('.you')
-        - else
-          = translation.translator.send(TranslationCenter::CONFIG['identifier_type'])
         = t('.on_date')
         = format_date(translation.created_at)
   %div.translation_voting
@@ -22,7 +18,6 @@
       = render 'translation_center/translations/accept_translation', translation: translation
     .votes_count.badge.badge-success.pull-right
       %span.count{ 'data-translation-id' => translation.id }
-        = translation.votes.count
       = t('.votings')
     %a.pull-right{href: '#'}
       - voted = current_user.voted_on?(translation)
