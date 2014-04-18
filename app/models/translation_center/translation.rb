@@ -1,7 +1,7 @@
 module TranslationCenter
   class Translation < ActiveRecord::Base
 
-    attr_accessible :value, :lang, :translation_key_id, :user_id, :status
+    attr_accessible :value, :lang, :translation_key_id, :translator_id, :status
     # serialize as we could store arrays
     serialize :value
 
@@ -12,8 +12,6 @@ module TranslationCenter
     belongs_to :translator, polymorphic: true
 
     alias_method :key, :translation_key
-    acts_as_votable
-    audited
 
     # validations
     validates :translation_key_id, :lang, :status, :value, presence: true
@@ -62,7 +60,7 @@ module TranslationCenter
         self.translation_key.reload
         self.update_attribute(:status, 'accepted')
       end
-      
+
     end
 
     # unaccept a translation
@@ -78,7 +76,7 @@ module TranslationCenter
 
     # make sure user has one translation per key per lang
     def one_translation_per_lang_per_key
-      if Translation.where(lang: self.lang, translator_id: self.translator.id, translator_type: self.translator.class.name, translation_key_id: self.key.id).empty?
+      if Translation.where(lang: self.lang, translator_id: self.translator_id, translator_type: self.translator.class.name, translation_key_id: self.key.id).empty?
         true
       else
         false
